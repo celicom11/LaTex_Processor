@@ -104,7 +104,7 @@ class DemoApp {
    D2DResources        m_d2d;
    CContainerItem      m_MainBox;
 public:
-   DemoApp() : m_hwnd(nullptr), m_MainBox(eacINNER, etsText) {}
+   DemoApp() : m_hwnd(nullptr), m_MainBox(eacINNER, etsDisplay) {}
    ~DemoApp() {}
 
    HRESULT Initialize() {
@@ -115,13 +115,13 @@ public:
       wcex.cbWndExtra = sizeof(LONG_PTR);
       wcex.hInstance = HINST_THISCOMPONENT;
       wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-      wcex.lpszClassName = L"DWriteMathDemoApp";
+      wcex.lpszClassName = L"MathBoxDemoApp";
 
       RegisterClassEx(&wcex);
 
       m_hwnd = CreateWindow(
-         L"DWriteMathDemoApp",
-         L"DirectWrite Radical Assembly Demo",
+         L"MathBoxDemoApp",
+         L"MathBox Demo",
          WS_OVERLAPPEDWINDOW,
          CW_USEDEFAULT, CW_USEDEFAULT,
          1000, 800,
@@ -189,7 +189,7 @@ private:
           m_d2d.pBlackBrush,
           nullptr
       };
-      m_MainBox.Draw({ 10.0f,50.0f }, dwri);
+      m_MainBox.Draw({ 10.0f,30.0f }, dwri);
 
       HRESULT hr = m_d2d.pRenderTarget->EndDraw();
       if (FAILED(hr)) {
@@ -206,10 +206,9 @@ private:
       CRadicalBuilder radicalBuilder(m_d2d.pFontFace);
 
       CMathStyle style(m_MainBox.Style());
-      const float aFontSize[] = { 9, 12 , 14, 18 , 21, 24, 30, 40, 50, 60, 72 };
-      // Radicand1: '𝘧' (MATHEMATICAL ITALIC SMALL F)
-      const UINT32 uRad1 = 0x01D453;
-      const UINT32 uRad2 = L'P';
+      const float aFontSize[] = { 9, 12 , 14, 18 , 21, 24, 30, 40, 50};
+      //const UINT32 uRad1 = 0x01D453; //'𝘧' (MATHEMATICAL ITALIC SMALL F)
+      //const UINT32 uRad2 = L'P';
       uint32_t nLeftEm = 0;
       CMathStyle styleNumerator(m_MainBox.Style());
       styleNumerator.SetCramped(true);
@@ -218,12 +217,12 @@ private:
       styleDenom.Decrease();
       CMathStyle styleDegree(etsScriptScript);
       for (float fSizePt : aFontSize) {
-         // Radicand is a fraction now: \sqrt[ABC]{\frac{1}{2}}
+         // TEST: radicand is a fraction now: \sqrt[ABC]{\frac{1}{2}}
          CWordItem* pNum = new CWordItem(m_d2d.pFontFace, styleNumerator, eacUNK, fSizePt / m_fFontSizePt);
          hRes = pNum->SetText({ L'1' });
          if (FAILED(hRes))
             return;//ERROR
-         CWordItem* pDenom = new CWordItem(m_d2d.pFontFace, styleDenom, eacUNK, fSizePt / m_fFontSizePt);
+         CWordItem* pDenom = new CWordItem(m_d2d.pFontFace, styleDenom, eacUNK, 1.0f);
          hRes = pDenom->SetText({ L'2' });
          CMathItem* pRadicand = CFractionBuilder::BuildFraction(m_MainBox.Style(), 1.0f, pNum, pDenom);
          //Degree/Index
