@@ -11,17 +11,17 @@ My goal is to provide basic selection and copy-to-clipboard support for rendered
 
 This project requires deep understanding of $\TeX$ and OpenType font typesetting concepts. Here are the key references used throughout development:
 
-- <a id="1">[](https://visualmatheditor.equatheque.net/doc/texbook.pdf)</a> *"The $\TeX$book"* by Donald Knuth (1986) - the foundational reference
-- <a id="2">[](https://www.tug.org/TUGboat/tb27-1/tb86jackowski.pdf)</a> *"Appendix G Illuminated"* by Bogusław Jackowski - practical TeX implementation guide
-- <a id="3">[](https://www.ntg.nl/maps/38/03.pdf)</a> *"OpenType Math Illuminated"* by Ulrik Vieth - OpenType MATH specification details
-- <a id="4">[](https://learn.microsoft.com/en-us/typography/opentype/spec/math)</a> *MATH - The Mathematical Typesetting Table* - Microsoft Typography documentation
-- <a id="5">[](https://w3c.github.io/mathml-core/)</a> *MathML Core Specifications* - W3C mathematical markup standards
-- <a id="6">[](https://fred-wang.github.io/MathFonts/LatinModern/)</a> *Latin Modern Math Font Glyphs* - comprehensive glyph documentation
-- <a id="7">[](https://github.com/ViktorQvarfordt/unicode-latex)</a> JSON mapping of LaTeX commands to **LMM** glyphs
+- <a id="1">[[1]](https://visualmatheditor.equatheque.net/doc/texbook.pdf)</a> *"The $\TeX$book"* by Donald Knuth (1986) - the foundational reference
+- <a id="2">[[2]](https://www.tug.org/TUGboat/tb27-1/tb86jackowski.pdf)</a> *"Appendix G Illuminated"* by Bogusław Jackowski - practical TeX implementation guide
+- <a id="3">[[3]](https://www.ntg.nl/maps/38/03.pdf)</a> *"OpenType Math Illuminated"* by Ulrik Vieth - OpenType MATH specification details
+- <a id="4">[[4]](https://learn.microsoft.com/en-us/typography/opentype/spec/math)</a> *MATH - The Mathematical Typesetting Table* - Microsoft Typography documentation
+- <a id="5">[[5]](https://w3c.github.io/mathml-core/)</a> *MathML Core Specifications* - W3C mathematical markup standards
+- <a id="6">[[6]](https://fred-wang.github.io/MathFonts/LatinModern/)</a> *Latin Modern Math Font Glyphs* - comprehensive glyph documentation
+- <a id="7">[[7]](https://github.com/ViktorQvarfordt/unicode-latex)</a> JSON mapping of LaTeX commands to **LMM** glyphs
 
 ## Font Data and Processing
 
-The project uses the **Latin Modern Math** font (**LMM**), which is free and comprehensively documented [](#6). The LMM font's MATH table content, combined with the LaTeX command mapping [](#7), is processed into the `LatinModernMathGlyphs.csv` table.
+The project uses the **Latin Modern Math** font (**LMM**), which is free and comprehensively documented [6]. The LMM font's MATH table content, combined with the LaTeX command mapping [](#7), is processed into the `LatinModernMathGlyphs.csv` table.
 
 This CSV contains records ordered by font Glyph Indexes (as used in DirectWrite API) with the following fields:
 
