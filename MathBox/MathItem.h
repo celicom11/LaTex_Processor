@@ -80,7 +80,7 @@ enum EnumMathItemType {
    eacBIN,              // Bin: binary operation, e.g. +,-,*,etc.
    eacREL,              // Rel: relation, e.g. =,<,>,etc.
    eacPUNCT,            // Punct: punctuation, e.g. comma,semicolon,etc.
-   eacBRACETS,          // Open/Close: (big) delimiters, e.g. (,[,{,|,),],},etc.
+   eacBRACKETS,          // Open/Close: (big) delimiters, e.g. (,[,{,|,),],},etc.
    eacINNER,            // Inner: subformula, e.g. nominator in fraction, integrant in integral, etc.
    eacOVER,             // Over: item with an overbrace child
    eacUNDER,            // Under: item with an underbrace child
@@ -111,9 +111,9 @@ public:
    void SetStyle(EnumTexStyle eTexStyle) { m_eTexStyle = eTexStyle; }
    float StyleScale() const {
       if (m_eTexStyle == etsScript)
-         return 0.7f;//otfScriptPercentScaleDown / 100.0f;
+         return otfScriptPercentScaleDown;
       else if (m_eTexStyle == etsScriptScript)
-         return 0.5f; otfScriptScriptPercentScaleDown / 100.0f;
+         return otfScriptScriptPercentScaleDown;
       return 1.0f; //display
    }
    //METHODS
