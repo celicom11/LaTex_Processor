@@ -6,14 +6,14 @@ import os
 def get_eTexClass(glyph_name, codepoint):
     """
     Heuristic to determine TeX class from glyph name and Unicode codepoint.
-    Returns: 0-ORD(default), 1-LargeOp, 2-Bin, 3-Rel, 4-Delimiter (Open/Close), 
-             5-Punct, 6-Over, 7-Under, 8-Top Accent, 9-Radical
+    Returns: 0-ORD(default), 1-(Large)Op, 2-Bin, 3-Rel, 4-Delimiter (Open/Close), 
+             5-Punct, 6-Over, 7-Under, 8-Top Accent, 9-Radical, 10-Glue/Skip
     """
     name_lower = glyph_name.lower()
     
     # Large operators
     if any(x in name_lower for x in ["sum", "prod", "int", "oint", "bigcap", "bigcup", "bigwedge", "bigvee"]):
-        return 1  # etcLOP
+        return 1  # Op
     
     # Binary operators
     if any(x in name_lower for x in ["plus", "minus", "times", "div", "ast", "star", "cdot", "bullet", "oplus", "otimes", "wedge", "vee", "cap", "cup"]):

@@ -66,12 +66,12 @@ struct SDWRenderInfo {
    ID2D1Brush*          pBrush{ nullptr };
    ID2D1Brush*          pSelBrush{ nullptr };      //selection support
 };
-enum EnumTexStyle {
-   etsDisplay = 0,   // display mode
-   etsText,          // inline/compact mode
-   etsScript,
-   etsScriptScript
-};
+   enum EnumTexStyle {
+      etsDisplay = 0,   // display mode
+      etsText,          // inline/compact mode
+      etsScript,
+      etsScriptScript
+   };
 // Extended TeX atom's classes, for typesetting rules
 enum EnumMathItemType {
    eacUNK = -1,
@@ -80,7 +80,9 @@ enum EnumMathItemType {
    eacBIN,              // Bin: binary operation, e.g. +,-,*,etc.
    eacREL,              // Rel: relation, e.g. =,<,>,etc.
    eacPUNCT,            // Punct: punctuation, e.g. comma,semicolon,etc.
-   eacBRACKETS,          // Open/Close: (big) delimiters, e.g. (,[,{,|,),],},etc.
+   eacOPEN,             // Open: (big) delimiters, e.g. (,[,{,|,etc.
+   eacCLOSE,            // Close: (big) delimiters, e.g. |,),],},etc.
+   eacBRACKETS,         // Open/Close pair: with inner child, e.g. \left(...\right)
    eacINNER,            // Inner: subformula, e.g. nominator in fraction, integrant in integral, etc.
    eacOVER,             // Over: item with an overbrace child
    eacUNDER,            // Under: item with an underbrace child
@@ -127,20 +129,22 @@ class CMathItem {
 protected:
    bool             m_bSelected{ false };    //selection support
    bool             m_bOneGlyph{ false };    //needed for superscript/subscript positioning
+   float            m_fUserScale{ 1.0f }; //user scaling factor
    EnumMathItemType m_eType{ eacUNK };       //~TeX atom type
    CMathStyle       m_Style;                 //Tex style info   
    STexBox          m_Box;
 public:
    //CTOR/DTOR
    CMathItem(EnumMathItemType eType, const CMathStyle& style, float fUserScale = 1.0f) :
-      m_eType(eType), m_Style(style) {
+      m_eType(eType), m_Style(style), m_fUserScale(fUserScale) {
    }
    virtual ~CMathItem() {}
    //ATTS
    bool IsSelected() const { return m_bSelected; }
    bool IsOneGlyph() const { return m_bOneGlyph; }
-   const CMathStyle& Style() { return m_Style; }
+   const CMathStyle& GetStyle() { return m_Style; }
    const STexBox& Box() const { return m_Box; }
+   EnumMathItemType Type() const { return m_eType; }
    //METHODS
    void DenominateBinRel() {
       //make it ordinary atom

@@ -205,14 +205,14 @@ private:
       HRESULT hRes;
       CRadicalBuilder radicalBuilder(m_d2d.pFontFace);
 
-      CMathStyle style(m_MainBox.Style());
+      CMathStyle style(m_MainBox.GetStyle());
       const float aFontSize[] = { 9, 12 , 14, 18 , 21, 24, 30, 40, 50};
       //const UINT32 uRad1 = 0x01D453; //'𝘧' (MATHEMATICAL ITALIC SMALL F)
       //const UINT32 uRad2 = L'P';
       uint32_t nLeftEm = 0;
-      CMathStyle styleNumerator(m_MainBox.Style());
+      CMathStyle styleNumerator(m_MainBox.GetStyle());
       styleNumerator.SetCramped(true);
-      CMathStyle styleDenom(m_MainBox.Style());
+      CMathStyle styleDenom(m_MainBox.GetStyle());
       styleDenom.SetCramped(true);
       styleDenom.Decrease();
       CMathStyle styleDegree(etsScriptScript);
@@ -224,7 +224,7 @@ private:
             return;//ERROR
          CWordItem* pDenom = new CWordItem(m_d2d.pFontFace, styleDenom, eacUNK, 1.0f);
          hRes = pDenom->SetText({ L'2' });
-         CMathItem* pRadicand = CFractionBuilder::BuildFraction(m_MainBox.Style(), 1.0f, pNum, pDenom);
+         CMathItem* pRadicand = CFractionBuilder::BuildFraction(m_MainBox.GetStyle(), 1.0f, pNum, pDenom);
          //Degree/Index
          CWordItem* pRadDegree = new CWordItem(m_d2d.pFontFace, styleDegree, eacUNK);
          //mathit ABC
@@ -232,7 +232,7 @@ private:
          if (FAILED(hRes))
             return;//ERROR
 
-         CMathItem* pRadical0 = radicalBuilder.BuildRadical(m_MainBox.Style(), 1.0f, pRadicand, pRadDegree);
+         CMathItem* pRadical0 = radicalBuilder.BuildRadical(m_MainBox.GetStyle(), 1.0f, pRadicand, pRadDegree);
          if (!pRadical0) {
             _ASSERT(0);
             delete pRadicand;

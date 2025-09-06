@@ -3,7 +3,6 @@
 #include "GlyphRun.h"
 
 class CWordItem : public CMathItem {
-   float            m_fUserScale{ 1.0f }; //user scaling factor
    IDWriteFontFace* m_pFontFace;          //external, dnd!
    CGlyphRun        m_GlyphRun;
 public:
