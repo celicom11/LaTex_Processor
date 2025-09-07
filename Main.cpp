@@ -102,9 +102,9 @@ class DemoApp {
    float               m_fFontSizePt{ 12.0f }; //document font size, in points
    HWND                m_hwnd;
    D2DResources        m_d2d;
-   CContainerItem      m_MainBox;
+   CContainerItem      m_MainBox;//TODO: HBOX
 public:
-   DemoApp() : m_hwnd(nullptr), m_MainBox(eacINNER, etsDisplay) {}
+   DemoApp() : m_hwnd(nullptr), m_MainBox(eacHBOX, etsDisplay) {}
    ~DemoApp() {}
 
    HRESULT Initialize() {

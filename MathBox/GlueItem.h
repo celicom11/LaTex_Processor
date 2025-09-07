@@ -14,12 +14,12 @@ class CGlueItem : public CMathItem {
 public:
 //CTOR/DTOR
    CGlueItem(float fKernEM, const CMathStyle& style, float fUserScale = 1.0f) : 
-      CMathItem(eacGlue, style, fUserScale){
+      CMathItem(eacGLUE, style, fUserScale){
       m_fMin = m_fNorm = m_fMax = m_fActual = fKernEM;
       UpdateBox_();
    }
    CGlueItem(float fMin, float fNorm, float fMax, const CMathStyle& style, float fUserScale = 1.0f) :
-      CMathItem(eacGlue, style, fUserScale), m_fMin(fMin), m_fNorm(fNorm),m_fMax(fMax) {
+      CMathItem(eacGLUE, style, fUserScale), m_fMin(fMin), m_fNorm(fNorm),m_fMax(fMax) {
        m_fActual = fNorm;
       UpdateBox_();
    }

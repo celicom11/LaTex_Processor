@@ -5,7 +5,7 @@
 namespace { //static helpers
    // TeX atom spacing matrix in D/T mode; values in muskip units/MuSkipType
    constexpr int16_t ATOM_SPACING_MATRIX[8][8] = {
-     //L\R      Ord  Op   Bin  Rel  Open Close Punct Inner
+      //L\R      Ord  Op   Bin  Rel  Open Close Punct Inner
       /*Ord*/  { 0,   1,   2,   3,   0,    0,    0,    1 },   // Ordinary
       /*Op*/   { 1,   1,   0,   3,   0,    0,    0,    1 },   // Large operator  
       /*Bin*/  { 2,   2,   0,   0,   2,    0,    0,    2 },   // Binary operator
@@ -15,37 +15,6 @@ namespace { //static helpers
       /*Punct*/{ 1,   1,   1,   1,   1,    1,    1,    1 },   // Punctuation
       /*Inner*/{ 1,   1,   2,   3,   1,    0,    1,    1 }    // Inner (fractions, etc.)
    };
-   enum EnumTexAtomClass {
-      etacOrd = 0,
-      etacOp, //large operator
-      etacBin,
-      etacRel,
-      etacOpen,
-      etacClose,
-      etacPunct,
-      etacInner,
-      etacClassCount = 8
-   };
-   EnumTexAtomClass _GetTexAtomClass(EnumMathItemType eType) {
-      switch (eType)
-      {
-      case eacBIN:      return etacBin;
-      case eacREL:      return etacRel;
-      case eacPUNCT:    return etacPunct;
-      case eacOPEN:     return etacOpen;
-      case eacCLOSE:
-      case eacBRACKETS: return etacClose;//right may be invisible, todo!
-      case eacINNER:
-      case eacRADICAL:  //we treat radical as inner atom!
-      case eacFRACTION: return etacInner;
-      case eacINTEGRAL:
-      case eacSUM:
-      case eacPRODUCT:
-      case eacLIMIT:
-      case eacMINMAX: return etacOp;
-      }
-      return etacOrd; //default
-   }
 }
 
 CGlueItem* CGlueItem::_Create(CMathItem* pPrev, CMathItem* pNext, const CMathStyle& style, float fUserScale) {
@@ -62,15 +31,15 @@ CGlueItem* CGlueItem::_Create(CMathItem* pPrev, CMathItem* pNext, const CMathSty
    return nullptr; //no glue needed!
 }
 CGlueItem::MuSkipType CGlueItem::_GetMuSkipType_(const CMathStyle& style, CMathItem* pPrev, CMathItem* pNext) {
-   if(pPrev->Type() == eacGlue || pNext->Type() == eacGlue)
+   if(pPrev->Type() == eacGLUE || pNext->Type() == eacGLUE)
       return emstNoSpace;//no extra space between glues!
    //map prev/next types to matrix indices 0=Ord, 1=Op, 2=Bin, 3=Rel, 4=Open, 5=Close, 6=Punct, 7=Inner
-   int nPrevClass = _GetTexAtomClass(pPrev->Type());
-   int nNextClass = _GetTexAtomClass(pNext->Type());
+   int nPrevClass = pPrev->AtomType(false);
+   int nNextClass = pNext->AtomType(true);
    if (style.Style() <= etsText)
       return (MuSkipType)ATOM_SPACING_MATRIX[nPrevClass][nNextClass];
    //else
-   if(nPrevClass== etacOp && nNextClass == etacBin)
+   if(nPrevClass== etaOP && nNextClass == etaBIN)
       return emstThinMuSkip; //in D/T mode, Op-Bin is thin space
    return emstNoSpace; //no space in other cases in D/T mode
 }

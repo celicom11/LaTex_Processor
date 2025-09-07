@@ -66,36 +66,41 @@ struct SDWRenderInfo {
    ID2D1Brush*          pBrush{ nullptr };
    ID2D1Brush*          pSelBrush{ nullptr };      //selection support
 };
-   enum EnumTexStyle {
-      etsDisplay = 0,   // display mode
-      etsText,          // inline/compact mode
-      etsScript,
-      etsScriptScript
-   };
-// Extended TeX atom's classes, for typesetting rules
+enum EnumTexStyle {
+   etsDisplay = 0,   // display mode
+   etsText,          // inline/compact mode
+   etsScript,
+   etsScriptScript
+};
+// TeX atom's basic types, for inter-spacing rules
+enum EnumTexAtom {
+   etaORD=0,            // Ord: variable name or text
+   etaOP,               // Op: Large operator, e.g. integral, sum, etc.
+   etaBIN,              // Bin: binary operation, e.g. +,-,*,etc.
+   etaREL,              // Rel: relation, e.g. =,<,>,etc.
+   etaOPEN,             // Open: left delimiters, e.g. (,[,{,|,etc.
+   etaCLOSE,            // Close: right delimiters, e.g. |,),],},etc.
+   etaPUNCT,            // Punct: punctuation, e.g. comma,semicolon,etc.
+   etaINNER             // Inner: boxed subformula, e.g. nominator in fraction, integrant in integral, etc.
+};
+// Math item types
 enum EnumMathItemType {
-   eacUNK = -1,
-   eacEXT = 0,          // -: exention glyphs/fillers, etc.NOTE: non-selectable items!
-   eacWORD,             // Ord: variable name or text
-   eacBIN,              // Bin: binary operation, e.g. +,-,*,etc.
-   eacREL,              // Rel: relation, e.g. =,<,>,etc.
-   eacPUNCT,            // Punct: punctuation, e.g. comma,semicolon,etc.
-   eacOPEN,             // Open: (big) delimiters, e.g. (,[,{,|,etc.
-   eacCLOSE,            // Close: (big) delimiters, e.g. |,),],},etc.
+   eacUNK = -1,         // exention glyphs/fillers and other non selectable items
+   eacWORD,             // variable name, number, operator, punctuation,etc or text
    eacBRACKETS,         // Open/Close pair: with inner child, e.g. \left(...\right)
-   eacINNER,            // Inner: subformula, e.g. nominator in fraction, integrant in integral, etc.
+   eacHBOX,             // Inner boxed subformula, e.g. nominator in fraction, integrant, radicand, etc.
    eacOVER,             // Over: item with an overbrace child
    eacUNDER,            // Under: item with an underbrace child
    eacACCENT,           // Acc: item with an accent child (bar,hat,vec,tilde, etc.)
    eacINDEXED,          // [all]: item with subscript/superscript indexes; its default in TeX, but not here!
-   eacRADICAL,          // Rad: radical/root item with base and argument
+   eacRADICAL,          // radical/root item with base and argument
    eacFRACTION,         // Inner: fraction item with numerator and denominator
-   eacINTEGRAL,         // Op: integral item with integrand and limits
-   eacSUM,              // Op: sum item with summand and limits
-   eacPRODUCT,          // Op: product item with multiplicand and limits
-   eacLIMIT,            // Op: limit item with arg and to_target children
-   eacMINMAX,           // Op: min/max item with an arg child
-   eacGlue,             // -: invisible spacing item of variable width
+   eacBIGOP,            // OP: integrals,sum, prod, etc,
+   eacOPLIM,            // operators name + optional limits.Used for (\lim, \liminf, \min, \max, \gcd, etc.)
+   eacCANCEL,           // item with a cancel line (diagonal cross-out)
+   eacNOT,              // item with a slash (negation)
+   eacSUBSTACK,         // ~vbox, item with substack child (for multi-level limits etc.)
+   eacGLUE,             // -: invisible spacing item of variable width
 };
 //Tex style helper class
 class CMathStyle {
@@ -129,7 +134,8 @@ class CMathItem {
 protected:
    bool             m_bSelected{ false };    //selection support
    bool             m_bOneGlyph{ false };    //needed for superscript/subscript positioning
-   float            m_fUserScale{ 1.0f }; //user scaling factor
+   float            m_fUserScale{ 1.0f };    //user scaling factor
+   EnumTexAtom      m_eAtom{ etaORD };       //TeX atom class, for inter-item spacing rules
    EnumMathItemType m_eType{ eacUNK };       //~TeX atom type
    CMathStyle       m_Style;                 //Tex style info   
    STexBox          m_Box;
@@ -144,12 +150,17 @@ public:
    bool IsOneGlyph() const { return m_bOneGlyph; }
    const CMathStyle& GetStyle() { return m_Style; }
    const STexBox& Box() const { return m_Box; }
+   EnumTexAtom AtomType(bool bRight = false) const { 
+      if(eacBRACKETS == m_eType)
+         return bRight ? etaCLOSE : etaOPEN;
+      return m_eAtom; 
+   }
    EnumMathItemType Type() const { return m_eType; }
    //METHODS
    void DenominateBinRel() {
       //make it ordinary atom
-      if (m_eType == eacBIN || m_eType == eacREL)
-         m_eType = eacWORD;
+      if (m_eAtom == etaBIN || m_eAtom == etaREL)
+         m_eAtom = etaORD;
    }
    void MoveTo(int32_t nX, int32_t nY) {
       m_Box.MoveTo(nX, nY);

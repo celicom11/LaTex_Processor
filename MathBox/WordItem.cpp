@@ -2,6 +2,40 @@
 #include "..\stdafx.h"
 #include "WordItem.h"
 
+namespace {
+   bool _IsIn(UINT32 nCP, const UINT32* pCP0, const UINT32* pCP1) {
+      for (const UINT32* pCP = pCP0; pCP < pCP1; ++pCP) {
+         if (*pCP == nCP)
+            return true;
+      }
+      return false;
+   }
+   bool _IsBin(UINT32 nCP) {
+      return _IsIn(nCP, _aUniBIN, _aUniBIN + _countof(_aUniBIN));
+   }
+   bool _IsRel(UINT32 nCP) {
+      return _IsIn(nCP, _aUniREL, _aUniREL + _countof(_aUniREL)) ||
+         (nCP >= _rngUniREL1[0] && nCP <= _rngUniREL1[1]) ||
+         (nCP >= _rngUniREL2[0] && nCP <= _rngUniREL2[1]) ||
+         (nCP >= _rngUniREL3[0] && nCP <= _rngUniREL3[1]);
+         
+   }
+   bool _IsDelim(UINT32 nCP) {
+      return _IsIn(nCP, _aUniDELIM, _aUniDELIM + _countof(_aUniDELIM));
+   }
+   bool _IsPunct(UINT32 nCP) {
+      return _IsIn(nCP, _aUniPUNCT, _aUniPUNCT + _countof(_aUniPUNCT));
+   }
+   bool _IsAccent(UINT32 nCP) {
+      return _IsIn(nCP, _aUniACCENT, _aUniACCENT + _countof(_aUniACCENT));
+   }
+   bool _IsBigOp(UINT32 nCP) {
+      return _IsIn(nCP, _aUniBigOP, _aUniBigOP + _countof(_aUniBigOP));
+   }
+   bool _IsArrow(UINT32 nCP) {
+      return (nCP >= _rngUniArrows[0] && nCP <= _rngUniArrows[1]);
+   }
+}
 CWordItem::CWordItem(IDWriteFontFace* pFontFace, const CMathStyle& style, EnumMathItemType eType, float fUserScale) :
    CMathItem(eType, style, fUserScale) {
    m_pFontFace = pFontFace;
@@ -46,19 +80,20 @@ void CWordItem::OnInit_() {
    //more updates
    m_bOneGlyph = (m_GlyphRun.Glyphs().size() == 1);
 
-   if (m_eType == eacUNK) {
-      //TMP: deduce type from the first glyph only
-      //TODO: load LatinModernMathGlyphs.csv with 
-      //      nCodePoint,sName,sLaTex,eTexClass,nTopAccentX,nItalicCorr mappings 
-      m_eType = eacWORD; //default
-      if (m_bOneGlyph) {
-         UINT32 nCP = m_GlyphRun.Glyphs().front().codepoint;
-         if (nCP == L'+' || nCP == L'-' || nCP == L'*' || nCP == L':')
-            m_eType = eacBIN;
-         else if (nCP == L'=' || nCP == L'<' || nCP == L'>' || nCP == L'\x2264' || nCP == L'\x2265' || nCP == L'\x2260')
-            m_eType = eacREL;
-         else if (nCP == L',' || nCP == L';' || nCP == L'.')
-            m_eType = eacPUNCT;
-      }
+   //set atom type
+   if (m_bOneGlyph) {
+      UINT32 nCP = m_GlyphRun.Glyphs().front().codepoint;
+      if(_IsPunct(nCP))
+         m_eAtom = etaPUNCT;
+      else if(_IsBin(nCP))
+         m_eAtom = etaBIN;
+      else if (_IsRel(nCP) || _IsArrow(nCP)) //treat arrows as REL
+         m_eAtom = etaREL;
+      else if(_IsDelim(nCP))
+         m_eAtom = etaOPEN; //assume open, will be fixed in CMathRow
+      else if(_IsBigOp(nCP))
+         m_eAtom = etaOP;
+      else
+         m_eAtom = etaORD;
    }
 }
