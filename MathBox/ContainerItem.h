@@ -4,7 +4,7 @@
 //generic item container
 class CContainerItem : public CMathItem {
 protected:
-   vector<CMathItem*>		m_vTBoxes;		//may be empty!
+   vector<CMathItem*>		m_vItems;		//may be empty!
 public:
    //CTOR/DTOR
    CContainerItem(EnumMathItemType eType, const CMathStyle& style) :
@@ -12,18 +12,18 @@ public:
    }
    ~CContainerItem() { Clear(); }
    //ATTS
-   bool IsEmpty() const { return m_vTBoxes.empty(); }
+   bool IsEmpty() const { return m_vItems.empty(); }
    //METHODS
    void Clear() {
-      for (CMathItem* pTBox : m_vTBoxes)
+      for (CMathItem* pTBox : m_vItems)
          delete pTBox;
-      m_vTBoxes.clear();
+      m_vItems.clear();
       m_Box = STexBox();
    }
    void AddBox(CMathItem* pTBox, int32_t nX, int32_t nY, bool bAnchor = false) {
       if (pTBox) {
          pTBox->MoveTo(nX, nY);
-         m_vTBoxes.push_back(pTBox);
+         m_vItems.push_back(pTBox);
          m_Box.Union(pTBox->Box());
          if (bAnchor)
             m_Box.nAscent = pTBox->Box().BaselineY() - m_Box.Top();
@@ -34,7 +34,7 @@ public:
          return;//ntd
       const int32_t nDX = nXOrig - m_Box.Left();
       const int32_t nDY = nYOrig - m_Box.Top();
-      for (CMathItem* pTBox : m_vTBoxes) {
+      for (CMathItem* pTBox : m_vItems) {
          pTBox->MoveBy(nDX, nDY);
       }
       m_Box.MoveTo(nXOrig, nYOrig);
@@ -51,7 +51,7 @@ public:
         ptAnchor.x + EM2DIPS(dwri.fFontSizePts, m_Box.Left()),
         ptAnchor.y + EM2DIPS(dwri.fFontSizePts, m_Box.Top())
       };
-      for (CMathItem* pTBox : m_vTBoxes) {
+      for (CMathItem* pTBox : m_vItems) {
          pTBox->Draw(ptMyAnchor, dwri);
       }
    }

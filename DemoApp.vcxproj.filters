@@ -24,6 +24,9 @@
     <ClCompile Include="MathBox\GlueItem.cpp">
       <Filter>MathBox</Filter>
     </ClCompile>
+    <ClCompile Include="MathBox\HBoxItem.cpp">
+      <Filter>MathBox</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -52,6 +55,9 @@
       <Filter>MathBox</Filter>
     </ClInclude>
     <ClInclude Include="MathBox\GlueItem.h">
+      <Filter>MathBox</Filter>
+    </ClInclude>
+    <ClInclude Include="MathBox\HBoxItem.h">
       <Filter>MathBox</Filter>
     </ClInclude>
   </ItemGroup>

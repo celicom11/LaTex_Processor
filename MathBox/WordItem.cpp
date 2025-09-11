@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "..\stdafx.h"
 #include "WordItem.h"
 
 namespace {

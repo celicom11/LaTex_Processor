@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "..\stdafx.h"
 #include "RadicalBuilder.h"
 #include "WordItem.h"
 #include "FillerItem.h"
